@@ -1,0 +1,64 @@
+terraform {
+    required_providers {
+        aws = {
+            source = "hashicorp/aws"
+            version = "~>3.0"
+        }
+    }
+}
+
+#configure the AWS
+
+provider "aws"  {
+    region = "ap-south-1"
+}
+
+#Create our first VPC
+resource "aws_vpc" "MyLab-VPC"{
+    cidr_block = var.cidr_block[0]
+    tags = {
+        Name = "MyLab-VPC"
+    }
+}
+
+#create subnet for VPC
+resource "aws_subnet" "MyLab-Subnet" {
+    vpc_id = aws_vpc.MyLab-VPC.id
+    cidr_block = var.cidr_block[1]
+
+    tags = {
+        Name = "MyLab-Subnet"
+    }
+}
+
+#create Internet Gateway
+resource "aws_internet_gateway" "MyIGW" {
+    vpc_id = aws_vpc.MyLab-VPC.id
+
+    tags = {
+        Name = "MyIGW"
+    }
+}
+
+#create Security Group
+resource "aws_security_group" "MyLab_Sec_Grp" {
+    name = "MyLab Security Group"
+    description = "To allow inbound and outbound traffic"
+    vpc_id = aws_vpc.MyLab-VPC.id
+    ingress{
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"] 
+    }
+    egress{
+        from_port = 0
+        to_port = 0
+        protocol = "-1"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    tags = {
+        Name = "Allow Traffic"
+    }
+    
+}
