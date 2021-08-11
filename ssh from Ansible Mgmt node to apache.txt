@@ -1,0 +1,20 @@
+communicating Ansible Controller node to Ansible Apache node:
+
+commands:
+*Ansible Controller-
+$ssh-keygen	(generating keygen for communication)
+$cd /home/ansibleadmin/.ssh/
+$ls
+(we can see files has been generated)
+
+
+*Ansible Apache-
+$ip addr
+(copy the ip address of inet)
+
+
+*Ansible Controller-
+$ssh-copy-id "ipaddress"
+(enter the password)
+
+
